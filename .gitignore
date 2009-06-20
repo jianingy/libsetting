@@ -1,0 +1,6 @@
+*.html
+*.[oa]
+*.l[oa]
+/test/regress
+/doxygen/html
+/doxygen/latex
