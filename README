@@ -1,0 +1,95 @@
+# jemdoc: menu{MENU}{index.html}
+= TextConfig
+[http://blog.jianingy.com/ Jianing Yang] ([jianingy.yang@gamil.com])
+
+== Introduction
+
+TextConfig is a lightweight configuration parser written in C++.
+It has limited syntax but enough for practise.
+
+== Syntax
+
+One line for each configuration item. If a line is started by a '#', it will
+be treated as a comment line and simplely ignored.
+
+Each configuration line separated by a '='. The string before the '='
+is treated as a key while the one after '=' is its value. 
+
+Notice that all white-spaces before a key or around the '=' are ignored.
+
+For example, 
+~~~
+{}{}
+core.alpha = 0.05
+core.beta = 0.2
+core.id = HU7321
+core.start = 12:30
+~~~
+
+== Code Example
+
+=== Configuration
+~~~
+{}{}
+# this is a sample config
+int = 1
+           double = 3.1415926        
+   long      =4294967296
+string =           hello, world
+vector=el1,el2              ,el3,              el4
+cite= int is $int, double is $double, long is $long, string is $string.
+~~~
+
+=== Code
+~~~
+{}{C++}
+#include <vector>
+#include <iostream>
+
+#include "text_config.h"
+
+int main()
+{
+    std::vector<std::string> vec;
+    std::string s;
+    TextConfig cfg("sample.cfg");
+
+    std::cout <<  "int      => " << cfg.get_int("int") << std::endl
+              <<  "long     => " << cfg.get_long("long") << std::endl
+              <<  "dobule   => " << cfg.get_double("double") << std::endl
+              <<  "string   => " << cfg.get_cstr("string") << std::endl;
+
+    std::cout <<  "vector   => ";
+    cfg.get_vector("vector", &vec);
+    for (int i = 0; i < vec.size(); i++)
+        std::cout << "'" << vec[i] << "' ";
+    std::cout << std::endl;
+    std::cout <<  "cite     => " << cfg.get_cstr("cite") << std::endl;
+    cfg << "dynamic = $int + $long";
+    std::cout <<  "dynamic  => " << cfg.get_cstr("dynamic") << std::endl;
+    std::string dump;
+    cfg.dump(&dump);
+    std::cout << "\nDump Text Config\n" << dump << std::endl;
+}
+~~~
+
+=== Output
+~~~
+{}{}
+int      => 1
+long     => 2147483647
+dobule   => 3
+string   => hello, world
+vector   => 'el1' 'el2' 'el3' 'el4' 
+cite     => int is 1, double is 3.1415926 , long is 4294967296, string is hello, world.
+dynamic  => 1 + 4294967296
+
+Dump Text Config
+cite = int is $int, double is $double, long is $long, string is $string.
+double = 3.1415926 
+dynamic = $int + $long
+int = 1
+long = 4294967296
+string = hello, world
+vector = el1,el2              ,el3,              el4
+~~~
