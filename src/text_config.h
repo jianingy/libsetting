@@ -50,7 +50,7 @@
  * @section Introduction
  *
  * TextConfig is a lightweight configuration parser with limited syntax
- * but enough for practise.
+ * but enough for practice.
  *
  * @section Syntax
  *
