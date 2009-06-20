@@ -1,80 +1,112 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-	<title>jianingy/TextConfig @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #306e58;
-		  font-family: "helvetica"; 
-  		color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #cf91a7; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #cf91a7; }
-    h3 { text-align: center; color: #cf91a7; }
-    a { color: #cf91a7; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
+<meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link rel="stylesheet" href="jemdoc.css" type="text/css" />
+<title>TextConfig</title>
 </head>
-
 <body>
-  <a href="http://github.com/jianingy/TextConfig"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-  
-  <div id="container">
+<table summary="Table for page layout." id="tlayout">
+<tr valign="top">
+<td id="layout-menu">
+<div class="menu-category">TextConfig</div>
+<div class="menu-item"><a href="index.html" class="current">home</a></div>
+<div class="menu-item"><a href="api/class_text_config.html">api&nbsp;reference</a></div>
+</td>
+<td id="layout-content">
+<div id="toptitle">
+<h1>TextConfig</h1>
+</div>
+<h2>Introduction</h2>
+<p>TextConfig is a lightweight configuration parser written in C<tt></tt>.
+It has limited syntax but enough for practise.</p>
+<h2>Syntax</h2>
+<p>One line for each configuration item. If a line is started by a &rsquo;
+be treated as a comment line and simplely ignored.</p>
+<p>Each configuration line separated by a &rsquo;=&rsquo;. The string before the &rsquo;=&rsquo;
+is treated as a key while the one after &rsquo;=&rsquo; is its value. </p>
+<p>Notice that all white-spaces before a key or around the &rsquo;=&rsquo; are ignored.</p>
+<p>For example, </p>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+core.alpha = 0.05
+core.beta = 0.2
+core.id = HU7321
+core.start = 12:30
+</pre></div></div>
+<h2>Code Example</h2>
+<h3>Configuration</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+# this is a sample config
+int = 1
+           double = 3.1415926
+   long      =4294967296
+string =           hello, world
+vector=el1,el2              ,el3,              el4
+cite= int is $int, double is $double, long is $long, string is $string.
+</pre></div></div>
+<h3>Code</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
 
-    <div class="download">
-      <a href="http://github.com/jianingy/TextConfig/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/jianingy/TextConfig/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-      
-    <h1><a href="http://github.com/jianingy/TextConfig">TextConfig</a> 
-      <span class="small">by <a href="http://github.com/jianingy">jianingy</a></span></h1>
+#include "text_config.h"
 
-    <div class="description">
-      A lightweight configuration parser with simple syntax
-    </div>
+int main()
+{
+    std::vector&lt;std::string&gt; vec;
+    std::string s;
+    TextConfig cfg("sample.cfg");
 
-    <h2>Authors</h2>
-<p>Jianing Yang (jianingy.yang@gmail.com)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>Jianing Yang (jianingy.yang@gmail.com)<br/>      </p>
+    std::cout &lt;&lt;  "int      =&gt; " &lt;&lt; cfg.get_int("int") &lt;&lt; std::endl
+              &lt;&lt;  "long     =&gt; " &lt;&lt; cfg.get_long("long") &lt;&lt; std::endl
+              &lt;&lt;  "dobule   =&gt; " &lt;&lt; cfg.get_double("double") &lt;&lt; std::endl
+              &lt;&lt;  "string   =&gt; " &lt;&lt; cfg.get_cstr("string") &lt;&lt; std::endl;
 
+    std::cout &lt;&lt;  "vector   =&gt; ";
+    cfg.get_vector("vector", &amp;vec);
+    for (int i = 0; i &lt; vec.size(); i++)
+        std::cout &lt;&lt; "'" &lt;&lt; vec[i] &lt;&lt; "' ";
+    std::cout &lt;&lt; std::endl;
+    std::cout &lt;&lt;  "cite     =&gt; " &lt;&lt; cfg.get_cstr("cite") &lt;&lt; std::endl;
+    cfg &lt;&lt; "dynamic = $int + $long";
+    std::cout &lt;&lt;  "dynamic  =&gt; " &lt;&lt; cfg.get_cstr("dynamic") &lt;&lt; std::endl;
+    std::string dump;
+    cfg.dump(&amp;dump);
+    std::cout &lt;&lt; "\nDump Text Config\n" &lt;&lt; dump &lt;&lt; std::endl;
+}
+</pre></div></div>
+<h3>Output</h3>
+<div class="codeblock">
+<div class="blockcontent"><pre>
+int      =&gt; 1
+long     =&gt; 2147483647
+dobule   =&gt; 3
+string   =&gt; hello, world
+vector   =&gt; 'el1' 'el2' 'el3' 'el4'
+cite     =&gt; int is 1, double is 3.1415926 , long is 4294967296, string is hello, world.
+dynamic  =&gt; 1 + 4294967296
 
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/jianingy/TextConfig/zipball/master">zip</a> or
-      <a href="http://github.com/jianingy/TextConfig/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/jianingy/TextConfig</pre>
-    </p>
-      
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/jianingy/TextConfig">jianingy/TextConfig</a>
-    </div>
-    
-  </div>
-
-  
+Dump Text Config
+cite = int is $int, double is $double, long is $long, string is $string.
+double = 3.1415926
+dynamic = $int + $long
+int = 1
+long = 4294967296
+string = hello, world
+vector = el1,el2              ,el3,              el4
+</pre></div></div>
+<div id="footer">
+<div id="footer-text">
+Page generated 2009-06-20 21:06:36 CST, by <a href="http://jemdoc.jaboc.net/">jemdoc</a>.
+</div>
+</div>
+</td>
+</tr>
+</table>
 </body>
 </html>
