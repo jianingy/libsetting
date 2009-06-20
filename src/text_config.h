@@ -10,8 +10,8 @@
  *     * Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
- *     * The names of its contributors may not be used to endorse or promote 
- *       products derived from this software without specific prior written 
+ *     * The names of its contributors may not be used to endorse or promote
+ *       products derived from this software without specific prior written
  *       permission.
  *
  * THIS SOFTWARE IS PROVIDED BY detrox@gmail.com ''AS IS'' AND ANY
@@ -24,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 #ifndef TEXT_CONFIG_H_
@@ -47,22 +47,22 @@
 
 /**
  * @mainpage TextConfig
- * @Introduction
+ * @section Introduction
  *
- * TextConfig is a lightweight configuration parser with limited syntax 
+ * TextConfig is a lightweight configuration parser with limited syntax
  * but enough for practise.
  *
- * @Syntax
+ * @section Syntax
  *
  * One line for each configuration item. If a line is started by a '#', it will
  * be treated as a comment line and simplely ignored.
  *
  * Each configuration line separated by a '='. The string before the '='
- * is treated as a key while the one after '=' is its value. 
+ * is treated as a key while the one after '=' is its value.
  *
  * Notice that all white-spaces before a key or before the '=' are ignored.
  *
- * For example, 
+ * For example,
  *
  * @code
  * core.alpha = 0.05
@@ -81,12 +81,12 @@ class TextConfig {
     /** Default Constructor, create a TextConfig object
      *  @param     level    Maximum recusion time for parsing variable
      */
-    TextConfig(size_t level = 3): recursion_level_(level) {}
+    explicit TextConfig(size_t level = 3): recursion_level_(level) {}
 
     /** Parse a given configuration file
      *  @param     s        The filename
      *  @param     level    Maximum recusion time for parsing variable
-     */ 
+     */
     explicit TextConfig(const char *s, size_t level = 3)
         :recursion_level_(level)
     {
@@ -133,7 +133,7 @@ class TextConfig {
         return (get_value(key))?atol(reserve_.c_str()):defval;
     }
 
-    /** Get a value from parser by given key and convert it to 
+    /** Get a value from parser by given key and convert it to
       * long long integer
       * @param   key      The Key
       * @param   defval   Default value to be returned if key doesn't exist
@@ -161,7 +161,8 @@ class TextConfig {
       * @param   defval   Default value to be returned if key doesn't exist
       * @return The value of given key or defval if key doesn't exist
       */
-    const char* get_cstr(const std::string &key, const char *defval = NULL) const
+    const char* get_cstr(const std::string &key,
+                         const char *defval = NULL) const
     {
         return (get_value(key))?reserve_.c_str():defval;
     }
@@ -190,7 +191,7 @@ class TextConfig {
         }
         return true;
     }
-    
+
     /** Dump configuration into a std::string
       * @param    out    Pointer to a std::string object used to store
       *                  the outputs.
@@ -229,10 +230,12 @@ class TextConfig {
   protected:
     /** Internal Key-Value type */
     typedef std::map<std::string, std::string> item_type;
-
-    size_t recursion_level_; /// Maximum Recursion Level
-    item_type map_; /// Internal Key-Value Map
-    mutable std::string reserve_; /// Temporary string
+    /** Maximum Recursion Level */
+    size_t recursion_level_;
+    /** Internal Key-Value Map */
+    item_type map_;
+    /** Temporary string */
+    mutable std::string reserve_;
 
     /** Trim a string
       * @param  s     The string
@@ -275,7 +278,7 @@ class TextConfig {
         }
         return false;
     }
-    
+
     /** Insert a new line to TextConfig. Only in memory and will not be
      *  flushed to disk file
      *  @param    s    The line according to syntax
