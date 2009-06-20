@@ -5,7 +5,7 @@
 == Introduction
 
 TextConfig is a lightweight configuration parser written in C++.
-It has limited syntax but enough for practice.
+It has limited syntax but enough in practice.
 
 == Syntax
 
