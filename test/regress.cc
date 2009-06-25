@@ -1,13 +1,13 @@
 #include <vector>
 #include <iostream>
 
-#include "text_config.h"
+#include "setting.h"
 
 int main()
 {
     std::vector<std::string> vec;
     std::string s;
-    TextConfig cfg("sample.cfg");
+    dutil::setting cfg("sample.cfg");
 
     std::cout <<  "int      => " << cfg.get_int("int") << std::endl
               <<  "long     => " << cfg.get_long("long") << std::endl

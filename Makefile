@@ -1,6 +1,6 @@
 CXX=g++
-CXXFLAGS=-Isrc/
+CXXFLAGS=-Iinclude/
 
 all: test/regress
-test/regess: test/regress.cc src/text_config.h
+test/regess: test/regress.cc include/setting.h
 	$(CXX) $(CXXFLAGS) -o $@ -g test/regress.cc

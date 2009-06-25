@@ -1,10 +1,10 @@
 # jemdoc: menu{MENU}{download.html}
-= TextConfig -- download
+= libsetting -- download
 
 == Git Source
 
 You can clone the project with [http://git-scm.com/ Git] by running
 ~~~
 {}{bash}
-$ git clone git://github.com/jianingy/TextConfig
+$ git clone git://github.com/jianingy/libsetting
 ~~~

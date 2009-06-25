@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef TEXT_CONFIG_H_
-#define TEXT_CONFIG_H_
+#ifndef SETTING_H_
+#define SETTING_H_
 
 #include <ctype.h>
 
@@ -39,6 +39,9 @@
 #include <stdexcept>
 #include <vector>
 
+#define BEGIN_SETTING_NAMESPACE namespace dutil {
+#define END_SETTING_NAMESPACE }
+
 #ifndef DISALLOW_COPY_AND_ASSIGN
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
       TypeName(const TypeName&);           \
@@ -46,21 +49,22 @@
 #endif
 
 /**
- * @mainpage TextConfig
+ * @mainpage libsetting
+ *
  * @section Introduction
  *
- * TextConfig is a lightweight configuration parser with limited syntax
+ * libsetting is a lightweight configuration parser with limited syntax
  * but enough in practice.
  *
  * @section Syntax
  *
- * One line for each configuration item. If a line is started by a '#', it will
- * be treated as a comment line and simplely ignored.
+ * One line for each configuration item. If a line is started with a '#',
+ * it will be treated as a comment line and simplely be ignored.
  *
  * Each configuration line separated by a '='. The string before the '='
  * is treated as a key while the one after '=' is its value.
  *
- * Notice that all white-spaces before a key or before the '=' are ignored.
+ * Notice that all white-spaces before a key or around the '=' are ignored.
  *
  * For example,
  *
@@ -72,109 +76,131 @@
  * @endcode
  */
 
-/**
- * @brief Configuration Parser
+
+BEGIN_SETTING_NAMESPACE
+
+/** @addtogroup setting_api libsetting API
+ *
+ *  @{ The libsetting's API
  */
 
-class TextConfig {
+/// Setting parser.
+class setting {
   public:
-    /** Default Constructor, create a TextConfig object
-     *  @param     level    Maximum recusion time for parsing variable
+    /**
+     * Constructs a setting.
+     *
+     * @param level Maximum recusion times for parsing variable
      */
-    explicit TextConfig(size_t level = 3): recursion_level_(level) {}
+    explicit setting(size_t level = 3): recursion_level_(level) {}
 
-    /** Parse a given configuration file
-     *  @param     s        The filename
-     *  @param     level    Maximum recusion time for parsing variable
+    /**
+     * Constructs a setting with a configuration file.
+     *
+     * @param s        The filename.
+     * @param level    Maximum recusion time for parsing variable.
      */
-    explicit TextConfig(const char *s, size_t level = 3)
+    explicit setting(const char *s, size_t level = 3)
         :recursion_level_(level)
     {
         read_from_file(s);
     }
 
-    /** Add a new line to TextConfig according to its syntax
-      * @param   s      configuration string
-      * @return  The reference of this object
-      */
-    TextConfig& operator<< (const char *s)
+    /**
+     * Adds a extra line.
+     *
+     * @param s Text according to @see Syntax.
+     * @return A instance of setting.
+     */
+    setting& operator<< (const char *s)
     {
         insert(std::string(s));
         return *this;
     }
 
-    /** Add a new line to TextConfig according to its syntax
-      * @param   str    configuration string
-      * @return  The reference of this object
-      */
-    TextConfig& operator<< (const std::string &str)
+    /**
+     * Adds an extra line.
+     *
+     * @param str Text according to @see Syntax.
+     * @return A instance of setting.
+     */
+    setting& operator<< (const std::string &str)
     {
         insert(str);
         return *this;
     }
 
-    /** Get a value from parser by given key and convert it to integer
-      * @param   key      The Key
-      * @param   defval   Default value to be returned if key doesn't exist
-      * @return The value of given key or defval if key doesn't exist
-      */
+    /**
+     * Gets a value using key and convert it to integer.
+     *
+     * @param   key      The Key.
+     * @param   defval   Default value to be returned if key doesn't exist.
+     * @return The value of given key or defval if key doesn't exist.
+     */
     int get_int(const std::string &key, int defval = 0) const
     {
         return (get_value(key))?atoi(reserve_.c_str()):defval;
     }
 
-    /** Get a value from parser by given key and convert it to long integer
-      * @param   key      The Key
-      * @param   defval   Default value to be returned if key doesn't exist
-      * @return The value of given key or defval if key doesn't exist
-      */
+    /**
+     * Gets a value using key and convert it to long integer.
+     *
+     * @param   key      The Key.
+     * @param   defval   Default value to be returned if key doesn't exist.
+     * @return The value of given key or defval if key doesn't exist.
+     */
     long get_long(const std::string &key, long defval = 0) const
     {
         return (get_value(key))?atol(reserve_.c_str()):defval;
     }
 
-    /** Get a value from parser by given key and convert it to
-      * long long integer
-      * @param   key      The Key
-      * @param   defval   Default value to be returned if key doesn't exist
-      * @return The value of given key or defval if key doesn't exist
-      */
+    /**
+     * Gets a value using key and convert it to long long integer.
+     *
+     * @param   key      The Key.
+     * @param   defval   Default value to be returned if key doesn't exist.
+     * @return The value of given key or defval if key doesn't exist.
+     */
     long get_longlong(const std::string &key, long long defval = 0) const
     {
         return (get_value(key))?atoll(reserve_.c_str()):defval;
     }
 
-    /** Get a value from parser by given key and convert it to double
-      * @param   key      The Key
-      * @param   defval   Default value to be returned if key doesn't exist
-      * @return The value of given key or defval if key doesn't exist
-      */
+    /**
+     * Gets a value using key and convert it to double.
+     *
+     * @param   key      The Key.
+     * @param   defval   Default value to be returned if key doesn't exist.
+     * @return The value of given key or defval if key doesn't exist.
+     */
     long get_double(const std::string &key, double defval = 0.0) const
     {
         return (get_value(key))?strtod(reserve_.c_str(), NULL):defval;
     }
 
-    /** Get value from parser by given key as const char *. You
-      * need to copy the value immediately. It may changed after
-      * next get_* call.
-      * @param   key      The Key
-      * @param   defval   Default value to be returned if key doesn't exist
-      * @return The value of given key or defval if key doesn't exist
-      */
+    /**
+     * Gets a value using key and conver it to c-style string. You
+     * need to copy the value immediately. It may changed after
+     * next get_* call.
+     *
+     * @param   key      The Key.
+     * @param   defval   Default value to be returned if key doesn't exist.
+     * @return The value of given key or defval if key doesn't exist.
+     */
     const char* get_cstr(const std::string &key,
                          const char *defval = NULL) const
     {
         return (get_value(key))?reserve_.c_str():defval;
     }
 
-    /** Get a value from parser by given key and cut it into a vector
-      * by comma.
-      * @param   key      The Key
+    /** Gets a value using key and splitted it into a vector by comma.
+      *
+      * @param   key      The Key.
       * @param   out      Pointer to a std::vector<std::string> object
       *                   used to store the outputs.
       * @return true if key exists, otherwise false.
       */
-    void get_vector(const std::string &key, std::vector<std::string> *out)
+    bool get_vector(const std::string &key, std::vector<std::string> *out)
     {
         std::string::size_type break_pos, pos;
         std::string s;
@@ -192,10 +218,12 @@ class TextConfig {
         return true;
     }
 
-    /** Dump configuration into a std::string
-      * @param    out    Pointer to a std::string object used to store
-      *                  the outputs.
-      */
+    /**
+     * Dumps configuration text.
+     *
+     * @param    out    Pointer to a std::string object used to store
+     *                  the outputs.
+     */
     void dump(std::string *out) const
     {
         std::map<std::string, std::string>::const_iterator it;
@@ -207,9 +235,11 @@ class TextConfig {
         }
     }
 
-    /** Load a configuration by given filename
-      * @param    filename    Filename of the configuration
-      */
+    /**
+     * Loads a configuration.
+     *
+     * @param filename Filename of the configuration.
+     */
     void read_from_file(const char *filename)
     {
         std::ifstream ifs(filename);
@@ -228,20 +258,22 @@ class TextConfig {
     }
 
   protected:
-    /** Internal Key-Value type */
+    /** Internal Key-Value type. */
     typedef std::map<std::string, std::string> item_type;
-    /** Maximum Recursion Level */
+    /** Maximum Recursion Level. */
     size_t recursion_level_;
-    /** Internal Key-Value Map */
+    /** Internal Key-Value Map. */
     item_type map_;
-    /** Temporary string */
+    /** Temporary string. */
     mutable std::string reserve_;
 
-    /** Trim a string
-      * @param  s     The string
-      * @param  out   Pointer to a std::string object to hold the trimmed
-      *               string.
-      */
+    /**
+     * Trims a string, removes its heading nand trailing white-spaces.
+     *
+     * @param  s     The string.
+     * @param  out   Pointer to a std::string object to hold the trimmed
+     *               string.
+     */
     static void trim(const std::string &s, std::string *out)
     {
         static const char       whitespace[] = " \t\r\n";
@@ -256,19 +288,23 @@ class TextConfig {
         *out = s.substr(begin, end + 1);
     }
 
-    /** check if a char is an identifier
-      * @param ch The char to be tested
-      * @return true if it is an identifier
-      */
+    /**
+     * Tests if ch is an identifier.
+     *
+     * @param ch The char to be tested.
+     * @return true if it is an identifier.
+     */
     static bool check_identifier(const char ch)
     {
         return (isalnum(ch) || (ch) == '_');
     }
 
-    /** Save the value of given key into reserve_
-      * @param    key    The Key
-      * @return   true if key exists, otherwise false
-      */
+    /**
+     * Gets a value into reserve_ using key.
+     *
+     * @param    key    The Key.
+     * @return   true if key exists, otherwise false.
+     */
     bool get_value(const std::string &key) const
     {
         item_type::const_iterator found = map_.find(key);
@@ -279,9 +315,11 @@ class TextConfig {
         return false;
     }
 
-    /** Insert a new line to TextConfig. Only in memory and will not be
-     *  flushed to disk file
-     *  @param    s    The line according to syntax
+    /**
+     * Adds an extra line to setting.
+     *
+     * @param s Text according to @see Syntax.
+     * @return A instance of setting.
      */
     void insert(const std::string &s)
     {
@@ -296,11 +334,13 @@ class TextConfig {
             map_[key] = value;
     }
 
-    /** Parse a given line
-      * @param     str   The line to be parsed
-      * @param     out   Pointer to a std::string object used to hold the
-      *                  output
-      */
+    /**
+     * Parses a string.
+     *
+     * @param     str   The string.
+     * @param     out   Pointer to a std::string object used to hold the
+     *                  output.
+     */
     void parse_once(const std::string &str, std::string *out) const
     {
         enum {
@@ -353,11 +393,13 @@ class TextConfig {
         }
     }
 
-    /** Parse a given line recursively
-      * @param    str   The given line
-      * @param    out   Pointer to a std::string object used to hold the
-      *                 outputs
-      */
+    /**
+     * Parses a string recursively.
+     *
+     * @param    str   The string.
+     * @param    out   Pointer to a std::string object used to hold the
+     *                 outputs.
+     */
     void parse_recursive(const std::string &str, std::string *out) const
     {
         std::string lhs(str), rhs;
@@ -372,9 +414,13 @@ class TextConfig {
     }
 
   private:
-    DISALLOW_COPY_AND_ASSIGN(TextConfig);
+    DISALLOW_COPY_AND_ASSIGN(setting);
 };
 
-#endif  // TEXT_CONFIG_H_
+/** @} */
+
+END_SETTING_NAMESPACE
+
+#endif  // SETTING_H_
 
 // vim: ts=4 sw=4 et ai cindent

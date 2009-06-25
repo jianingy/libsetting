@@ -1,10 +1,10 @@
 # jemdoc: menu{MENU}{index.html}
-= TextConfig
+= libsetting
 [http://blog.jianingy.com/ Jianing Yang] ([jianingy.yang@gamil.com])
 
 == Introduction
 
-TextConfig is a lightweight configuration parser written in C++.
+libsetting is a lightweight configuration parser written in C++.
 It has limited syntax but enough in practice.
 
 == Syntax
@@ -13,11 +13,11 @@ One line for each configuration item. If a line is started by a '#', it will
 be treated as a comment line and simplely ignored.
 
 Each configuration line separated by a '='. The string before the '='
-is treated as a key while the one after '=' is its value. 
+is treated as a key while the one after '=' is its value.
 
 Notice that all white-spaces before a key or around the '=' are ignored.
 
-For example, 
+For example,
 ~~~
 {}{}
 core.alpha = 0.05
@@ -33,7 +33,7 @@ core.start = 12:30
 {}{}
 # this is a sample config
 int = 1
-           double = 3.1415926        
+           double = 3.1415926
    long      =4294967296
 string =           hello, world
 vector=el1,el2              ,el3,              el4
@@ -46,13 +46,13 @@ cite= int is $int, double is $double, long is $long, string is $string.
 #include <vector>
 #include <iostream>
 
-#include "text_config.h"
+#include "setting.h"
 
 int main()
 {
     std::vector<std::string> vec;
     std::string s;
-    TextConfig cfg("sample.cfg");
+    dutil::setting cfg("sample.cfg");
 
     std::cout <<  "int      => " << cfg.get_int("int") << std::endl
               <<  "long     => " << cfg.get_long("long") << std::endl
