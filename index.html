@@ -5,33 +5,33 @@
 <meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <link rel="stylesheet" href="jemdoc.css" type="text/css" />
-<title>TextConfig</title>
+<title>libsetting</title>
 </head>
 <body>
 <table summary="Table for page layout." id="tlayout">
 <tr valign="top">
 <td id="layout-menu">
-<div class="menu-category">TextConfig</div>
+<div class="menu-category">libsetting</div>
 <div class="menu-item"><a href="index.html" class="current">home</a></div>
-<div class="menu-item"><a href="api/class_text_config.html">api&nbsp;reference</a></div>
+<div class="menu-item"><a href="api/class_setting.html">api&nbsp;reference</a></div>
 <div class="menu-item"><a href="download.html">download</a></div>
 <div class="menu-item"><a href="contact.html">contact</a></div>
 </td>
 <td id="layout-content">
 <div id="toptitle">
-<h1>TextConfig</h1>
+<h1>libsetting</h1>
 <div id="subtitle"><a href="http://blog.jianingy.com/">Jianing Yang</a> (<a href="mailto:jianingy.yang@gamil.com">jianingy.yang@gamil.com</a>)</div>
 </div>
 <h2>Introduction</h2>
-<p>TextConfig is a lightweight configuration parser written in C<tt></tt>.
-It has limited syntax but enough for practice.</p>
+<p>libsetting is a lightweight configuration parser written in C<tt></tt>.
+It has limited syntax but enough in practice.</p>
 <h2>Syntax</h2>
 <p>One line for each configuration item. If a line is started by a &rsquo;
 be treated as a comment line and simplely ignored.</p>
 <p>Each configuration line separated by a &rsquo;=&rsquo;. The string before the &rsquo;=&rsquo;
-is treated as a key while the one after &rsquo;=&rsquo; is its value. </p>
+is treated as a key while the one after &rsquo;=&rsquo; is its value.</p>
 <p>Notice that all white-spaces before a key or around the &rsquo;=&rsquo; are ignored.</p>
-<p>For example, </p>
+<p>For example,</p>
 <div class="codeblock">
 <div class="blockcontent"><pre>
 core.alpha = 0.05
@@ -57,13 +57,13 @@ cite= int is $int, double is $double, long is $long, string is $string.
 #include &lt;vector&gt;
 #include &lt;iostream&gt;
 
-#include "text_config.h"
+#include "setting.h"
 
 int main()
 {
     std::vector&lt;std::string&gt; vec;
     std::string s;
-    TextConfig cfg("sample.cfg");
+    dutil::setting cfg("sample.cfg");
 
     std::cout &lt;&lt;  "int      =&gt; " &lt;&lt; cfg.get_int("int") &lt;&lt; std::endl
               &lt;&lt;  "long     =&gt; " &lt;&lt; cfg.get_long("long") &lt;&lt; std::endl
@@ -105,7 +105,7 @@ vector = el1,el2              ,el3,              el4
 </pre></div></div>
 <div id="footer">
 <div id="footer-text">
-Page generated 2009-06-20 21:35:10 CST, by <a href="http://jemdoc.jaboc.net/">jemdoc</a>.
+Page generated 2009-06-25 08:46:57 CST, by <a href="http://jemdoc.jaboc.net/">jemdoc</a>.
 </div>
 </div>
 </td>
